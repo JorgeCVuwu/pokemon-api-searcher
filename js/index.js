@@ -5,6 +5,7 @@ import { getPokemonByName, getPokemonByFilters } from './controllers/fetch.js'
 
 async function createForm () {
   await createSelector('type', IGNORED_TYPES)
+  await createSelector('generation')
 }
 
 async function searchPokemon (event) {

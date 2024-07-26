@@ -6,7 +6,7 @@ async function createSelector (type, filterArray) {
 
   const typeJson = await fetchData(fetchUrl)
 
-  const typeSelector = document.getElementById('pokemon-type')
+  const typeSelector = document.getElementById(`pokemon-${type}`)
   const defaultOption = new Option(`Select ${type}...`, '', true, true)
   // defaultOption.disabled = true
   typeSelector.append(defaultOption)
