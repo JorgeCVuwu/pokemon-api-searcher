@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pokemon-data</title>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+    <h1>Pokémon data</h1>
+    <div class="pokemon-form-container">
+        <form id="pokemon-search" name="pokemon-search" class="pokemon-form">
+            <label for="pokemon-name">Pokémon name:</label>
+            <input id="pokemon-name" name="name" placeholder="Ingresa un Pokémon">
+            
+            <label for="pokemon-type">Pokémon type:</label>
+            <select id="pokemon-type" name="type"></select>
+            
+            <label for="pokemon-move">Pokémon move:</label>
+            <input id="pokemon-move" name="move" placeholder="Put a move">
+            
+            <label for="pokemon-ability">Pokémon ability:</label>
+            <input id="pokemon-ability" name="ability" placeholder="Put an ability">
+
+
+            <button id="pokemon-submit" type="submit">Search</button>
+        </form>
+    </div>
+    <div id="pokemon-response-container" class="pokemon-response-container">
+    </div>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+</html>

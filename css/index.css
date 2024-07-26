@@ -1,0 +1,43 @@
+h1 {
+    text-align: center;
+}
+
+.pokemon-form-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.pokemon-card {
+    border: 5px solid rgb(255, 255, 10);
+    width: 150px;
+    text-align: center;
+    background: lightblue;
+    border-radius: 8px;
+}
+
+.pokemon-name {
+    font-family: cursive;
+    color:midnightblue;
+}
+
+.pokemon-img {
+    background: white;
+    border: thick double gray;
+}
+
+.no-pokemon-found {
+    color: red;
+}
+
+.pokemon-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    width: 40%;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 5px;
+    justify-content: center;
+}
