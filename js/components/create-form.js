@@ -1,12 +1,13 @@
 import { POKEAPI_PREFIX } from '../constants/constants.js'
 import { fetchData } from '../controllers/fetch.js'
 
-async function createSelector (type, filterArray) {
-  const fetchUrl = `${POKEAPI_PREFIX}/${type}`
+async function createSelector (id, filterArray) {
+  const typeSelector = document.getElementById(id)
+  const type = typeSelector.name // el name de un campo siempre será el tipo de dato al que se refiere en la API (convención)
 
+  const fetchUrl = `${POKEAPI_PREFIX}/${type}`
   const typeJson = await fetchData(fetchUrl)
 
-  const typeSelector = document.getElementById(`pokemon-${type}`)
   const defaultOption = new Option(`Select ${type}...`, '', true, true)
   // defaultOption.disabled = true
   typeSelector.append(defaultOption)

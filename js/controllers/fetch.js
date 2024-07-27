@@ -51,8 +51,11 @@ async function getPokemonByFilters () {
   const obtainedPokemonObj = getCommonElements(allFetchedPokemon)
   if (obtainedPokemonObj) {
     for (const key in obtainedPokemonObj) {
-      const pokemonJson = await fetchData(obtainedPokemonObj[key])
-      foundedPokemon.push(pokemonJson)
+      const fetchUrl = `${POKEAPI_PREFIX}pokemon/${key}`
+      const pokemonJson = await fetchData(fetchUrl)
+      if (pokemonJson) {
+        foundedPokemon.push(pokemonJson)
+      }
     }
   }
   return foundedPokemon

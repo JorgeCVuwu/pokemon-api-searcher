@@ -22,13 +22,15 @@ function createPokemonCard (pokemonJson) {
 
   const pokemonImg = document.createElement('img')
   pokemonImg.classList.add('pokemon-img')
-  pokemonImg.src = pokemonJson.sprites.front_default
+  pokemonImg.src = pokemonJson?.sprites?.front_default ?? ''
 
   const pokemonTypes = document.createElement('p')
   pokemonImg.classList.add('pokemon-types')
   const typesArray = pokemonJson.types
-  const typesToText = typesArray.map(type => type.type.name).join(', ')
-  pokemonTypes.textContent = `Types: ${typesToText}`
+  if (typesArray) {
+    const typesToText = typesArray.map(type => type.type.name).join(', ')
+    pokemonTypes.textContent = `Types: ${typesToText}`
+  }
 
   pokemonDiv.append(pokemonName, pokemonDexNumber, pokemonImg, pokemonTypes)
 
