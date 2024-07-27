@@ -10,7 +10,7 @@ async function fetchData (fetchUrl) {
     const pokemonJson = await response.json()
     return pokemonJson
   } catch (error) {
-    console.error('Fetch error: ', error)
+    console.error('Fetch error: ', error, 'searching', fetchUrl)
     return false
   }
 }
@@ -23,6 +23,17 @@ async function getPokemonByName (name) {
     foundedPokemon.push(response)
   }
   return foundedPokemon
+}
+
+async function getPokemonSpeciesForms (fetchUrl) {
+  const speciesJson = await fetchData(fetchUrl)
+
+  const foundedSpecies = {}
+  for (const species of speciesJson.varieties) {
+    foundedSpecies[species.pokemon.name] = species.pokemon.url
+  }
+
+  return foundedSpecies
 }
 
 async function getPokemonByFilters () {
@@ -41,7 +52,13 @@ async function getPokemonByFilters () {
         const responseType = filterResponse[POKEMON_LIST_KEY_IN_PROPERTY[input.name]]
         for (const pokemon of responseType) {
           const pokemonData = pokemon?.[POKEMON_KEY_IN_PROPERTY?.[input.name]] ?? pokemon
-          pokemonList[pokemonData.name] = pokemonData.url
+
+          const pokemonUrl = pokemonData.url
+          let pokemonUrlAssignment = { [pokemonData.name]: pokemonUrl }
+          if (pokemonUrl.includes('pokemon-species/')) {
+            pokemonUrlAssignment = await getPokemonSpeciesForms(pokemonUrl)
+          }
+          Object.assign(pokemonList, pokemonUrlAssignment)
         }
         allFetchedPokemon.push(pokemonList)
       }
@@ -51,8 +68,8 @@ async function getPokemonByFilters () {
   const obtainedPokemonObj = getCommonElements(allFetchedPokemon)
   if (obtainedPokemonObj) {
     for (const key in obtainedPokemonObj) {
-      const fetchUrl = `${POKEAPI_PREFIX}pokemon/${key}`
-      const pokemonJson = await fetchData(fetchUrl)
+      const pokemonUrl = obtainedPokemonObj[key]
+      const pokemonJson = await fetchData(pokemonUrl)
       if (pokemonJson) {
         foundedPokemon.push(pokemonJson)
       }
