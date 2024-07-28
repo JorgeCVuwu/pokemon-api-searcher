@@ -1,12 +1,11 @@
-function getCommonElements (list) {
-  return list.reduce((acc, currentList) => {
-    return Object.keys(acc).reduce((commonAcc, key) => {
-      if (Object.prototype.hasOwnProperty.call(currentList, key)) {
-        commonAcc[key] = acc[key]
-      }
-      return commonAcc
-    }, {})
-  }, list[0])
+function getCommonElements (lists) {
+  return lists[0].filter(url =>
+    lists.every(list => list.includes(url))
+  )
 }
 
-export { getCommonElements }
+function sortPokemonUrlsById (list) {
+  return list.sort((url1, url2) => url1.split('/').at(-2) - url2.split('/').at(-2))
+}
+
+export { getCommonElements, sortPokemonUrlsById }

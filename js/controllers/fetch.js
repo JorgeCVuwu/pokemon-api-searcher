@@ -1,9 +1,9 @@
 import { POKEAPI_PREFIX, POKEMON_KEY_IN_PROPERTY, POKEMON_LIST_KEY_IN_PROPERTY } from '../constants/constants.js'
-import { getCommonElements } from '../utils/utils.js'
+import { getCommonElements, sortPokemonUrlsById } from '../utils/utils.js'
 
 async function fetchData (fetchUrl) {
   try {
-    const response = await fetch(fetchUrl)
+    const response = await fetch(fetchUrl.toString())
     if (!response.ok) {
       throw new Error(`Error! status: ${response.status} ${fetchUrl}`)
     }
@@ -13,6 +13,18 @@ async function fetchData (fetchUrl) {
     console.error('Fetch error: ', error, 'searching', fetchUrl)
     return false
   }
+}
+
+async function getIndexedPokemon (sortedPokemonArray, searchedIndex, searchedPokemonNumber) {
+  const pokemonList = []
+  const considerSpecialForms = document.getElementById('check-pokemon-forms').checked
+  for (const pokemonUrl of sortedPokemonArray.slice(searchedIndex, searchedIndex + searchedPokemonNumber)) {
+    const pokemonJson = await fetchData(pokemonUrl)
+    if (pokemonJson && (pokemonJson.is_default || considerSpecialForms)) {
+      pokemonList.push(pokemonJson)
+    }
+  }
+  return pokemonList
 }
 
 async function getPokemonByName (name) {
@@ -28,15 +40,14 @@ async function getPokemonByName (name) {
 async function getPokemonSpeciesForms (fetchUrl) {
   const speciesJson = await fetchData(fetchUrl)
 
-  const foundedSpecies = {}
+  const foundedSpecies = []
   for (const species of speciesJson.varieties) {
-    foundedSpecies[species.pokemon.name] = species.pokemon.url
+    foundedSpecies.push(species.pokemon.url)
   }
-
   return foundedSpecies
 }
 
-async function getPokemonByFilters () {
+async function getPokemonByFilters (searchedNumber) {
   const foundedPokemon = []
   const form = document.getElementById('pokemon-search')
   const inputs = form.querySelectorAll('input, select')
@@ -50,17 +61,16 @@ async function getPokemonByFilters () {
       const fetchUrl = `${POKEAPI_PREFIX}${input.name}/${input.value}`
       const filterResponse = await fetchData(fetchUrl)
       if (filterResponse) {
-        const pokemonList = {}
+        const pokemonList = []
         const responseType = filterResponse[POKEMON_LIST_KEY_IN_PROPERTY[input.name]]
         for (const pokemon of responseType) {
           const pokemonData = pokemon?.[POKEMON_KEY_IN_PROPERTY?.[input.name]] ?? pokemon
 
-          const pokemonUrl = pokemonData.url
-          let pokemonUrlAssignment = { [pokemonData.name]: pokemonUrl }
-          if (pokemonUrl.includes('pokemon-species/')) {
-            pokemonUrlAssignment = await getPokemonSpeciesForms(pokemonUrl)
+          let pokemonUrl = [pokemonData.url]
+          if (pokemonData.url.includes('pokemon-species/')) {
+            pokemonUrl = await getPokemonSpeciesForms(pokemonData.url)
           }
-          Object.assign(pokemonList, pokemonUrlAssignment)
+          pokemonList.push(...pokemonUrl)
         }
         allFetchedPokemon.push(pokemonList)
       }
@@ -68,9 +78,10 @@ async function getPokemonByFilters () {
   }
 
   const obtainedPokemonObj = getCommonElements(allFetchedPokemon)
-  if (obtainedPokemonObj) {
-    for (const key in obtainedPokemonObj) {
-      const pokemonUrl = obtainedPokemonObj[key]
+  const sortedPokemonArray = sortPokemonUrlsById(obtainedPokemonObj)
+  if (sortedPokemonArray) {
+    for (let i = 0; i < Math.min(searchedNumber, sortedPokemonArray.length); i++) {
+      const pokemonUrl = sortedPokemonArray[i]
       const pokemonJson = await fetchData(pokemonUrl)
       const considerSpecialForms = document.getElementById('check-pokemon-forms').checked
       if (pokemonJson && (pokemonJson.is_default || considerSpecialForms)) {
@@ -78,7 +89,7 @@ async function getPokemonByFilters () {
       }
     }
   }
-  return foundedPokemon
+  return { foundedPokemon, sortedPokemonArray }
 }
 
-export { fetchData, getPokemonByName, getPokemonByFilters }
+export { fetchData, getPokemonByName, getPokemonByFilters, getIndexedPokemon }

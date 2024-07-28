@@ -1,7 +1,20 @@
 import { createPokemonCard, createNotPokemonMessage } from './components/create-response.js'
 import { IGNORED_TYPES } from './constants/constants.js'
 import { createSelector } from './components/create-form.js'
-import { getPokemonByName, getPokemonByFilters } from './controllers/fetch.js'
+import { getPokemonByName, getPokemonByFilters, getIndexedPokemon } from './controllers/fetch.js'
+
+// global variables
+// let pokemonFounded
+const searchedPokemonNumber = 20
+let searchedIndex
+let sortedPokemonArray
+
+function createExpandButton () {
+  const expandPokemonSearchButton = document.createElement('button')
+  expandPokemonSearchButton.textContent = 'Expand search'
+  expandPokemonSearchButton.id = 'expand-pokemon-search'
+  return expandPokemonSearchButton
+}
 
 async function insertSelectOptions () {
   createSelector('pokemon-type-1', IGNORED_TYPES)
@@ -12,6 +25,8 @@ async function insertSelectOptions () {
 async function searchPokemon (event) {
   event.preventDefault()
 
+  searchedIndex = searchedPokemonNumber
+  sortedPokemonArray = []
   const responseContainer = document.getElementById('response-container')
   if (responseContainer.innerHTML !== '') {
     responseContainer.replaceChildren()
@@ -23,7 +38,7 @@ async function searchPokemon (event) {
   if (name !== '') {
     foundedPokemon = await getPokemonByName(name)
   } else {
-    foundedPokemon = await getPokemonByFilters()
+    ({ foundedPokemon, sortedPokemonArray } = await getPokemonByFilters(searchedPokemonNumber))
   }
 
   if (foundedPokemon.length !== 0) {
@@ -31,12 +46,17 @@ async function searchPokemon (event) {
     responsePokemonContainer.id = 'pokemon-response-container'
     responsePokemonContainer.classList.add('pokemon-response-container')
     const responsePokemonTitle = document.createElement('h2')
-    responsePokemonTitle.textContent = `${foundedPokemon.length} results found`
+    responsePokemonTitle.textContent = `${sortedPokemonArray.length > searchedPokemonNumber ? '20+' : sortedPokemonArray.length} results found`
     responseContainer.append(responsePokemonTitle)
     for (const pokemon of foundedPokemon) {
       responsePokemonContainer.append(createPokemonCard(pokemon))
     }
     responseContainer.append(responsePokemonContainer)
+
+    if (sortedPokemonArray && sortedPokemonArray.length > searchedPokemonNumber) {
+      const expandPokemonSearchButton = createExpandButton()
+      responseContainer.append(expandPokemonSearchButton)
+    }
   } else {
     responseContainer.append(createNotPokemonMessage())
   }
@@ -62,13 +82,31 @@ function blockOtherInputs (event) {
 
 insertSelectOptions()
 
-function handleClick (event) {
+async function handleClick (event) {
   const target = event.target
   const pokemonAudioButton = target.closest('.pokemon-audio-button')
-  if (!pokemonAudioButton) return
+  if (pokemonAudioButton) {
+    const pokemonAudio = pokemonAudioButton.nextElementSibling
+    pokemonAudio.play()
+    return
+  }
 
-  const pokemonAudio = pokemonAudioButton.nextElementSibling
-  pokemonAudio.play()
+  if (target.id === 'expand-pokemon-search') {
+    const responsePokemonContainer = document.getElementById('pokemon-response-container')
+    const pokemonList = await getIndexedPokemon(sortedPokemonArray, searchedIndex, searchedPokemonNumber)
+    for (const pokemon of pokemonList) {
+      responsePokemonContainer.append(createPokemonCard(pokemon))
+    }
+    target.remove()
+    searchedIndex += 20
+    if (sortedPokemonArray && sortedPokemonArray.length > searchedIndex) {
+      const expandPokemonSearchButton = createExpandButton()
+      const responseContainer = document.getElementById('response-container')
+      responseContainer.append(expandPokemonSearchButton)
+    } else {
+      searchedIndex = 0
+    }
+  }
 }
 
 document.addEventListener('click', handleClick)
