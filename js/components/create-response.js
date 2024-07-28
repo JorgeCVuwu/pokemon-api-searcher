@@ -32,15 +32,18 @@ function appendPokemonDexNumber (pokemonJson, pokemonDiv) {
 }
 
 function appendPokemonTypes (pokemonJson, pokemonDiv) {
-  const pokemonTypes = document.createElement('p')
-  pokemonTypes.classList.add('pokemon-types')
   const typesArray = pokemonJson.types
-  if (typesArray) {
-    const typesToText = typesArray.map(type => type.type.name).join(', ')
-    pokemonTypes.textContent = `Types: ${typesToText}`
+  const typeContainer = document.createElement('div')
+  typeContainer.classList.add('pokemon-type-container')
+  for (const type of typesArray) {
+    const typeImg = document.createElement('img')
+    typeImg.classList.add('pokemon-type-img')
+    const typeId = type.type.url.split('/').at(-2) // la id del tipo se encuentra dentro de la url del tipo (se evita hacer una busqueda adicional)
+    typeImg.src = `../../media/types/sword-shield/${typeId}.png`
+    typeContainer.append(typeImg)
   }
 
-  pokemonDiv.append(pokemonTypes)
+  pokemonDiv.append(typeContainer)
 }
 
 function appendPokemonCry (pokemonJson, pokemonDiv) {

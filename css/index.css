@@ -14,6 +14,7 @@ h1 {
     background: lightblue;
     border-radius: 8px;
     position: relative;
+    padding: 10px 0;
 }
 
 .pokemon-name {
@@ -65,4 +66,16 @@ h1 {
 .audio-icon {
     height: 20px;
     width: auto;
+}
+
+.pokemon-type-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.pokemon-type-img {
+    width: 60px;
+    height: auto;
 }
