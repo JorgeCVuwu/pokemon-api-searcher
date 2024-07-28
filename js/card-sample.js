@@ -7,4 +7,14 @@ async function createSample () {
   document.body.append(sampleCard)
 }
 
+function handleClick (event) {
+  const target = event.target
+  const pokemonAudioButton = target.closest('.pokemon-audio-button')
+  if (!pokemonAudioButton) return
+
+  const pokemonAudio = pokemonAudioButton.nextElementSibling
+  pokemonAudio.play()
+}
+
 createSample()
+document.addEventListener('click', handleClick)

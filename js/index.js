@@ -62,5 +62,17 @@ function blockOtherInputs (event) {
 
 insertSelectOptions()
 
+function handleClick (event) {
+  console.log('xd')
+  const target = event.target
+  const pokemonAudioButton = target.closest('.pokemon-audio-button')
+  if (!pokemonAudioButton) return
+
+  const pokemonAudio = pokemonAudioButton.nextElementSibling
+  console.log('play')
+  pokemonAudio.play()
+}
+
+document.addEventListener('click', handleClick)
 document.addEventListener('input', blockOtherInputs)
 document.addEventListener('submit', searchPokemon)

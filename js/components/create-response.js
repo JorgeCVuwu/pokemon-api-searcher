@@ -43,12 +43,32 @@ function appendPokemonTypes (pokemonJson, pokemonDiv) {
   pokemonDiv.append(pokemonTypes)
 }
 
+function appendPokemonCry (pokemonJson, pokemonDiv) {
+  const pokemonAudioContainer = document.createElement('div')
+  const audioIcon = document.createElement('img')
+  const audioButton = document.createElement('button')
+
+  audioIcon.src = '../../media/speaker_icon.svg'
+  audioIcon.classList.add('audio-icon')
+  audioButton.classList.add('pokemon-audio-button')
+
+  const audio = document.createElement('audio')
+  audio.src = pokemonJson.cries.latest
+
+  audioButton.append(audioIcon)
+  pokemonAudioContainer.append(audioButton)
+  pokemonAudioContainer.append(audio)
+
+  pokemonDiv.append(pokemonAudioContainer)
+}
+
 function createPokemonCard (pokemonJson) {
   const pokemonDiv = document.createElement('div')
   pokemonDiv.id = 'pokemon-card'
   pokemonDiv.classList.add('pokemon-card')
 
   appendPokemonName(pokemonJson, pokemonDiv)
+  appendPokemonCry(pokemonJson, pokemonDiv)
   appendPokemonDexNumber(pokemonJson, pokemonDiv)
   appendPokemonImg(pokemonJson, pokemonDiv)
   appendPokemonTypes(pokemonJson, pokemonDiv)
