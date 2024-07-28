@@ -41,10 +41,12 @@ async function getPokemonByFilters () {
   const form = document.getElementById('pokemon-search')
   const inputs = form.querySelectorAll('input, select')
 
+  const notFetchedInputs = ['check-pokemon-forms']
+
   const allFetchedPokemon = []
 
   for (const input of inputs) {
-    if (input.value !== '') {
+    if (input.value !== '' && !notFetchedInputs.includes(input.id)) {
       const fetchUrl = `${POKEAPI_PREFIX}${input.name}/${input.value}`
       const filterResponse = await fetchData(fetchUrl)
       if (filterResponse) {
@@ -70,7 +72,8 @@ async function getPokemonByFilters () {
     for (const key in obtainedPokemonObj) {
       const pokemonUrl = obtainedPokemonObj[key]
       const pokemonJson = await fetchData(pokemonUrl)
-      if (pokemonJson) {
+      const considerSpecialForms = document.getElementById('check-pokemon-forms').checked
+      if (pokemonJson && (pokemonJson.is_default || considerSpecialForms)) {
         foundedPokemon.push(pokemonJson)
       }
     }
