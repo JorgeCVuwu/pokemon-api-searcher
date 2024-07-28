@@ -13,6 +13,7 @@ h1 {
     text-align: center;
     background: lightblue;
     border-radius: 8px;
+    position: relative;
 }
 
 .pokemon-name {
@@ -56,6 +57,9 @@ h1 {
 .pokemon-audio-button {
     all: unset;
     cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
 .audio-icon {
