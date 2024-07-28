@@ -6,33 +6,52 @@ function toPascalCaseWithSpaces (str) {
     .join(' ')
 }
 
-function createPokemonCard (pokemonJson) {
-  const pokemonDiv = document.createElement('div')
-  pokemonDiv.id = 'pokemon-card'
-  pokemonDiv.classList.add('pokemon-card')
-
+function appendPokemonName (pokemonJson, pokemonDiv) {
   const pokemonName = document.createElement('p')
   pokemonName.classList.add('pokemon-name')
   pokemonName.textContent = toPascalCaseWithSpaces(pokemonJson.name)
 
+  pokemonDiv.append(pokemonName)
+}
+
+function appendPokemonImg (pokemonJson, pokemonDiv) {
+  const pokemonImg = document.createElement('img')
+  pokemonImg.classList.add('pokemon-img')
+  pokemonImg.src = pokemonJson?.sprites?.front_default ?? ''
+
+  pokemonDiv.append(pokemonImg)
+}
+
+function appendPokemonDexNumber (pokemonJson, pokemonDiv) {
   const pokemonDexNumber = document.createElement('p')
   pokemonDexNumber.classList.add('pokemon-dex-number')
   const dexNumber = pokemonJson.id
   pokemonDexNumber.textContent = `#${dexNumber}`
 
-  const pokemonImg = document.createElement('img')
-  pokemonImg.classList.add('pokemon-img')
-  pokemonImg.src = pokemonJson?.sprites?.front_default ?? ''
+  pokemonDiv.append(pokemonDexNumber)
+}
 
+function appendPokemonTypes (pokemonJson, pokemonDiv) {
   const pokemonTypes = document.createElement('p')
-  pokemonImg.classList.add('pokemon-types')
+  pokemonTypes.classList.add('pokemon-types')
   const typesArray = pokemonJson.types
   if (typesArray) {
     const typesToText = typesArray.map(type => type.type.name).join(', ')
     pokemonTypes.textContent = `Types: ${typesToText}`
   }
 
-  pokemonDiv.append(pokemonName, pokemonDexNumber, pokemonImg, pokemonTypes)
+  pokemonDiv.append(pokemonTypes)
+}
+
+function createPokemonCard (pokemonJson) {
+  const pokemonDiv = document.createElement('div')
+  pokemonDiv.id = 'pokemon-card'
+  pokemonDiv.classList.add('pokemon-card')
+
+  appendPokemonName(pokemonJson, pokemonDiv)
+  appendPokemonDexNumber(pokemonJson, pokemonDiv)
+  appendPokemonImg(pokemonJson, pokemonDiv)
+  appendPokemonTypes(pokemonJson, pokemonDiv)
 
   return pokemonDiv
 }
