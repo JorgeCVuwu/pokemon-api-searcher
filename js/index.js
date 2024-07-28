@@ -13,6 +13,7 @@ function createExpandButton () {
   const expandPokemonSearchButton = document.createElement('button')
   expandPokemonSearchButton.textContent = 'Expand search'
   expandPokemonSearchButton.id = 'expand-pokemon-search'
+  expandPokemonSearchButton.classList.add('expand-search-button')
   return expandPokemonSearchButton
 }
 
@@ -28,6 +29,7 @@ async function searchPokemon (event) {
   searchedIndex = searchedPokemonNumber
   sortedPokemonArray = []
   const responseContainer = document.getElementById('response-container')
+  responseContainer.classList.add('response-container')
   if (responseContainer.innerHTML !== '') {
     responseContainer.replaceChildren()
   }
@@ -46,7 +48,7 @@ async function searchPokemon (event) {
     responsePokemonContainer.id = 'pokemon-response-container'
     responsePokemonContainer.classList.add('pokemon-response-container')
     const responsePokemonTitle = document.createElement('h2')
-    responsePokemonTitle.textContent = `${sortedPokemonArray.length > searchedPokemonNumber ? '20+' : sortedPokemonArray.length} results found`
+    responsePokemonTitle.textContent = `${sortedPokemonArray.length} results found`
     responseContainer.append(responsePokemonTitle)
     for (const pokemon of foundedPokemon) {
       responsePokemonContainer.append(createPokemonCard(pokemon))
@@ -93,11 +95,11 @@ async function handleClick (event) {
 
   if (target.id === 'expand-pokemon-search') {
     const responsePokemonContainer = document.getElementById('pokemon-response-container')
+    target.remove()
     const pokemonList = await getIndexedPokemon(sortedPokemonArray, searchedIndex, searchedPokemonNumber)
     for (const pokemon of pokemonList) {
       responsePokemonContainer.append(createPokemonCard(pokemon))
     }
-    target.remove()
     searchedIndex += 20
     if (sortedPokemonArray && sortedPokemonArray.length > searchedIndex) {
       const expandPokemonSearchButton = createExpandButton()

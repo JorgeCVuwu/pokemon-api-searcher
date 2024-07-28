@@ -17,12 +17,9 @@ async function fetchData (fetchUrl) {
 
 async function getIndexedPokemon (sortedPokemonArray, searchedIndex, searchedPokemonNumber) {
   const pokemonList = []
-  const considerSpecialForms = document.getElementById('check-pokemon-forms').checked
   for (const pokemonUrl of sortedPokemonArray.slice(searchedIndex, searchedIndex + searchedPokemonNumber)) {
     const pokemonJson = await fetchData(pokemonUrl)
-    if (pokemonJson && (pokemonJson.is_default || considerSpecialForms)) {
-      pokemonList.push(pokemonJson)
-    }
+    pokemonList.push(pokemonJson)
   }
   return pokemonList
 }
@@ -41,8 +38,11 @@ async function getPokemonSpeciesForms (fetchUrl) {
   const speciesJson = await fetchData(fetchUrl)
 
   const foundedSpecies = []
+  const considerSpecialForms = document.getElementById('check-pokemon-forms').checked
   for (const species of speciesJson.varieties) {
-    foundedSpecies.push(species.pokemon.url)
+    if (considerSpecialForms || species.is_default) {
+      foundedSpecies.push(species.pokemon.url)
+    }
   }
   return foundedSpecies
 }
@@ -83,10 +83,7 @@ async function getPokemonByFilters (searchedNumber) {
     for (let i = 0; i < Math.min(searchedNumber, sortedPokemonArray.length); i++) {
       const pokemonUrl = sortedPokemonArray[i]
       const pokemonJson = await fetchData(pokemonUrl)
-      const considerSpecialForms = document.getElementById('check-pokemon-forms').checked
-      if (pokemonJson && (pokemonJson.is_default || considerSpecialForms)) {
-        foundedPokemon.push(pokemonJson)
-      }
+      foundedPokemon.push(pokemonJson)
     }
   }
   return { foundedPokemon, sortedPokemonArray }
