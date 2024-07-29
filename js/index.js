@@ -1,4 +1,4 @@
-import { createPokemonCard, createNotPokemonMessage } from './components/create-response.js'
+import { createPokemonCard, createNotPokemonMessage, createChargingGif } from './components/create-response.js'
 import { IGNORED_TYPES } from './constants/constants.js'
 import { createSelector } from './components/create-form.js'
 import { getPokemonByName, getPokemonByFilters, getIndexedPokemon } from './controllers/fetch.js'
@@ -41,6 +41,9 @@ async function searchPokemon (event) {
     responseContainer.replaceChildren()
   }
 
+  const chargingGif = createChargingGif()
+  responseContainer.append(chargingGif)
+
   const name = document.getElementById('pokemon-name').value
   let foundedPokemon
 
@@ -60,6 +63,7 @@ async function searchPokemon (event) {
     for (const pokemon of foundedPokemon) {
       responsePokemonContainer.append(createPokemonCard(pokemon))
     }
+    chargingGif.remove()
     responseContainer.append(responsePokemonContainer)
 
     if (sortedPokemonArray && sortedPokemonArray.length > searchedPokemonNumber) {
@@ -102,9 +106,7 @@ async function handleClick (event) {
 
   if (target.id === 'expand-pokemon-search') {
     const responsePokemonContainer = document.getElementById('pokemon-response-container')
-    const chargingGif = document.createElement('img')
-    chargingGif.className = 'charging-gif'
-    chargingGif.src = '../media/gifs/charging.gif'
+    const chargingGif = createChargingGif()
     target.replaceWith(chargingGif)
     const pokemonList = await getIndexedPokemon(sortedPokemonArray, searchedIndex, searchedPokemonNumber)
     chargingGif.remove()

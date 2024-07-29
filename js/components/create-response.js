@@ -86,4 +86,11 @@ function createNotPokemonMessage () {
   return errorMessage
 }
 
-export { createPokemonCard, createNotPokemonMessage }
+function createChargingGif () {
+  const chargingGif = document.createElement('img')
+  chargingGif.className = 'charging-gif'
+  chargingGif.src = '../media/gifs/charging.gif'
+  return chargingGif
+}
+
+export { createPokemonCard, createNotPokemonMessage, createChargingGif }
