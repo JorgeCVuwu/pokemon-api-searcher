@@ -102,8 +102,12 @@ async function handleClick (event) {
 
   if (target.id === 'expand-pokemon-search') {
     const responsePokemonContainer = document.getElementById('pokemon-response-container')
-    target.remove()
+    const chargingGif = document.createElement('img')
+    chargingGif.className = 'charging-gif'
+    chargingGif.src = '../media/gifs/charging.gif'
+    target.replaceWith(chargingGif)
     const pokemonList = await getIndexedPokemon(sortedPokemonArray, searchedIndex, searchedPokemonNumber)
+    chargingGif.remove()
     for (const pokemon of pokemonList) {
       responsePokemonContainer.append(createPokemonCard(pokemon))
     }
