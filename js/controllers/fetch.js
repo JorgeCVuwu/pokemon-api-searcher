@@ -54,7 +54,7 @@ async function getPokemonByFilters (searchedNumber) {
 
   const notFetchedInputs = ['check-pokemon-forms']
 
-  const allFetchedPokemon = []
+  let allFetchedPokemon = []
 
   for (const input of inputs) {
     if (input.value !== '' && !notFetchedInputs.includes(input.id)) {
@@ -73,6 +73,9 @@ async function getPokemonByFilters (searchedNumber) {
           pokemonList.push(...pokemonUrl)
         }
         allFetchedPokemon.push(pokemonList)
+      } else {
+        allFetchedPokemon = []
+        break
       }
     }
   }

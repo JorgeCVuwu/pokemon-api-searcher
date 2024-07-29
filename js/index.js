@@ -2,6 +2,7 @@ import { createPokemonCard, createNotPokemonMessage } from './components/create-
 import { IGNORED_TYPES } from './constants/constants.js'
 import { createSelector } from './components/create-form.js'
 import { getPokemonByName, getPokemonByFilters, getIndexedPokemon } from './controllers/fetch.js'
+import { validatePokemonForm } from './validation.js'
 
 // global variables
 // let pokemonFounded
@@ -25,6 +26,12 @@ async function insertSelectOptions () {
 
 async function searchPokemon (event) {
   event.preventDefault()
+
+  const validation = validatePokemonForm()
+  if (validation !== true) {
+    alert(validation)
+    return
+  }
 
   searchedIndex = searchedPokemonNumber
   sortedPokemonArray = []
