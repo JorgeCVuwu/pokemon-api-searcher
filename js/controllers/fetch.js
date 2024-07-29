@@ -1,6 +1,15 @@
 import { POKEAPI_PREFIX, POKEMON_KEY_IN_PROPERTY, POKEMON_LIST_KEY_IN_PROPERTY } from '../constants/constants.js'
 import { getCommonElements, sortPokemonUrlsById } from '../utils/utils.js'
 
+function pushFilteringSpecialForms (pokemonList, url) {
+  const considerSpecialForms = document.getElementById('check-pokemon-forms').checked
+  const urlId = url.split('/').at(-2)
+  // PokemonAPI convention: id > 10000 => pokemon special form
+  if (considerSpecialForms || urlId < 10000) {
+    pokemonList.push(url)
+  }
+}
+
 async function fetchData (fetchUrl) {
   try {
     const response = await fetch(fetchUrl.toString())
@@ -39,11 +48,8 @@ async function getPokemonSpeciesForms (fetchUrl) {
 
   const foundedSpecies = []
   if (speciesJson) {
-    const considerSpecialForms = document.getElementById('check-pokemon-forms').checked
     for (const species of speciesJson.varieties) {
-      if (considerSpecialForms || species.is_default) {
-        foundedSpecies.push(species.pokemon.url)
-      }
+      foundedSpecies.push(species.pokemon.url)
     }
   }
   return foundedSpecies
@@ -72,7 +78,9 @@ async function getPokemonByFilters (searchedNumber) {
           if (pokemonData.url.includes('pokemon-species/')) {
             pokemonUrl = await getPokemonSpeciesForms(pokemonData.url)
           }
-          pokemonList.push(...pokemonUrl)
+          for (const url of pokemonUrl) {
+            pushFilteringSpecialForms(pokemonList, url)
+          }
         }
         allFetchedPokemon.push(pokemonList)
       } else {
